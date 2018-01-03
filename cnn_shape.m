@@ -42,6 +42,7 @@ opts.imageExt = '.jpg';
 opts.numFetchThreads = 0 ;
 opts.multiview = true; 
 opts.viewpoolPos = 'relu5';
+opts.viewpoolType = 'max';
 opts.useUprightAssumption = true;
 opts.aug = 'stretch';
 opts.pad = 0; 
@@ -62,6 +63,7 @@ if opts.multiview,
     modelNameStr, ...
     dataName, ...
     opts.viewpoolPos, ...
+    opts.viewpoolType, ...			
     opts.networkType); 
 else
   opts.expDir = sprintf('%s-ft-%s-%s', ...
@@ -96,11 +98,12 @@ else
 end
 imdb.meta.nViews = nViews; 
 
-opts.train.train = find(imdb.images.set==1);
-opts.train.val = find(imdb.images.set==2); 
-if opts.includeVal, 
-  opts.train.train = [opts.train.train opts.train.val];
-  opts.train.val = [];
+if ~opts.includeVal, 
+  opts.train.train = find(imdb.images.set==1);
+  opts.train.val = find(imdb.images.set==2);
+else
+  opts.train.train = find(ismember(imdb.images.set, [1 2]));
+  opts.train.val = find(imdb.images.set==3);
 end
 opts.train.train = opts.train.train(1:nViews:end);
 opts.train.val = opts.train.val(1:nViews:end); 
@@ -113,6 +116,7 @@ net = cnn_shape_init(imdb.meta.classes, ...
   'restart', opts.fromScratch, ...
   'nViews', nViews, ...
   'viewpoolPos', opts.viewpoolPos, ...
+  'viewpoolType', opts.viewpoolType,...		     
   'networkType', opts.networkType);  
 
 % -------------------------------------------------------------------------

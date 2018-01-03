@@ -22,7 +22,7 @@ else
   if ~exist(netFilePath,'file'),
     fprintf('Downloading model (%s) ...', opts.base) ;
     vl_xmkdir(fullfile('data','models')) ;
-    urlwrite(fullfile('http://www.vlfeat.org/matconvnet/models/', ...
+    urlwrite(fullfile('http://www.vlfeat.org/matconvnet/models/beta18', ...
       [opts.base '.mat']), netFilePath) ;
     fprintf(' done!\n');
   end
